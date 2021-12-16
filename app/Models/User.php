@@ -11,8 +11,10 @@ use Laravel\Jetstream\HasProfilePhoto;
 use Laravel\Jetstream\HasTeams;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Stancl\Tenancy\Contracts\Syncable;
+use Stancl\Tenancy\Database\Concerns\ResourceSyncing;
 
-class User extends Authenticatable
+class User extends Authenticatable implements Syncable
 {
     use HasApiTokens;
     use HasFactory;
@@ -21,6 +23,7 @@ class User extends Authenticatable
     use Notifiable;
     use TwoFactorAuthenticatable;
     use HasRoles;
+    use ResourceSyncing;
 
     /**
      * The attributes that are mass assignable.
@@ -58,4 +61,28 @@ class User extends Authenticatable
      * @var array
      */
     protected $appends = ['profile_photo_url'];
+
+    public function getGlobalIdentifierKey()
+    {
+        return $this->getAttribute($this->getGlobalIdentifierKeyName());
+    }
+
+    public function getGlobalIdentifierKeyName(): string
+    {
+        return 'global_id';
+    }
+
+    public function getCentralModelName(): string
+    {
+        return CentralUser::class;
+    }
+
+    public function getSyncedAttributeNames(): array
+    {
+        return [
+            'name',
+            'password',
+            'email',
+        ];
+    }
 }

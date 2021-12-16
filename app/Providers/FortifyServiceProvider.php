@@ -10,6 +10,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Contracts\LogoutResponse;
 use Laravel\Fortify\Fortify;
 
 class FortifyServiceProvider extends ServiceProvider
@@ -31,6 +32,15 @@ class FortifyServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        //Fortify::ignoreRoutes();
+
+        $this->app->instance(LogoutResponse::class, new class () implements LogoutResponse {
+            public function toResponse($request)
+            {
+                return redirect()->route('welcome');
+            }
+        });
+
         Fortify::createUsersUsing(CreateNewUser::class);
         Fortify::updateUserProfileInformationUsing(UpdateUserProfileInformation::class);
         Fortify::updateUserPasswordsUsing(UpdateUserPassword::class);

@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\ServiceProvider;
+use Laravel\Fortify\Fortify;
 use Stancl\Tenancy\Events\TenancyBootstrapped;
 
 class AppServiceProvider extends ServiceProvider

@@ -24,9 +24,10 @@ Route::middleware([
     InitializeTenancyByDomain::class,
     PreventAccessFromCentralDomains::class,
 ])
-    ->prefix('app')
     ->group(function () {
-        Route::view('/', 'welcome')->name('welcome');
+        Route::view('/', 'welcome')->middleware('universal')
+            ->withoutMiddleware(PreventAccessFromCentralDomains::class)
+            ->name('welcome');
 
         Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::view('dashboard', 'dashboard')->name('dashboard');
